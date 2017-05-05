@@ -17,9 +17,8 @@ class ClientProcessor
     packed_length = [payload_length].pack('n')
     Async.write(packed_length)
     Async.write(payload)
-    buffer = Async.read(2)
-    response_length = buffer.unpack('n').first
-    response = JSON.parse(Async.read(response_length))
+    response_length = Async.read(2) {|buffer| buffer.unpack('n').first}
+    response = Async.read(response_length) {|buffer| JSON.parse(buffer)}
     Async.finish
     Async.finished(response)
   end

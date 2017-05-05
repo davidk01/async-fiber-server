@@ -3,10 +3,8 @@ require_relative './async'
 class ServerProcessor
 
   def start(initial_arguments)
-    buffer = Async.read(2)
-    message_length = buffer.unpack('n').first
-    buffer = Async.read(message_length)
-    payload = JSON.parse(buffer)
+    message_length = Async.read(2) {|buffer| buffer.unpack('n').first}
+    payload = Async.read(message_length) {|buffer| JSON.parse(buffer)}
     server_response = {
       type: :response,
       response: 6
